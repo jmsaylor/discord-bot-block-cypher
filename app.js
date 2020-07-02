@@ -3,6 +3,9 @@ const client = new Discord.Client();
 
 const makeAddress = require("./functions/blockchain/makeAddress");
 const makeWallet = require("./functions/blockchain/makeWallet");
+const getWallets = require("./functions/blockchain/getWallets");
+const getMyWallet = require("./functions/blockchain/getMyWallet");
+const getBalance = require("./functions/blockchain/getBalance");
 
 const { tokenDiscord } = require("./config/config");
 
@@ -20,7 +23,17 @@ client.on("message", async (msg) => {
   //   console.log(thing);
   if (msg.content.includes("^balance")) {
     console.log(msg.author.username);
-    msg.reply(`***Your balance is: ${balance}***`);
+    try {
+      //   msg.reply(`***Your balance is: ${balance}***`);
+      const { addresses } = await getMyWallet("ltc", msg.author.username);
+      console.log(addresses[0]);
+
+      const balance = await getBalance("ltc", addresses[0]);
+
+      msg.reply(JSON.stringify(balance));
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   if (msg.content.includes("^makeaddress")) {
@@ -35,6 +48,10 @@ client.on("message", async (msg) => {
     } catch (error) {
       console.error(error);
     }
+  }
+  if (msg.content.includes("^wallets")) {
+    const wallets = await getWallets("ltc");
+    msg.reply(JSON.stringify(wallets));
   }
 
   if (msg.content.includes("^makewallet")) {
