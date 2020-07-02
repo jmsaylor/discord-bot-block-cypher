@@ -64,11 +64,35 @@ client.on("message", async (msg) => {
     msg.reply(JSON.stringify(wallet));
   }
 
+  if (msg.content.includes("^mention")) {
+    // console.log(typeof msg.mentions.users);
+    // msg.reply(typeof msg.mentions);
+  }
+
+  if (msg.content.includes("^transact")) {
+    //Sender
+    const sender = msg.author.username;
+    console.log(`Sender: ${sender}`);
+    //Amount
+    let arr = msg.content.split(" ").slice(1);
+
+    const amount = arr[0];
+    console.log(`Amount: ${amount}`);
+
+    //Recepient
+    msg.mentions.users.forEach((user) => {
+      console.log(`Recepient: ${user.username}`);
+    });
+  }
+
   if (msg.content.includes("^help")) {
     msg.reply(`
       ***HELP PAGE***
+      help - this page
         makeaddress - returns new address like {private,public,address,wif}
-        makewallet <address> - stores address in wallet name of your Discord username 
+        makewallet <address> - stores address in wallet name of your Discord username
+    wallets - list all wallets
+    balance - show my balance
       `);
   }
 });
