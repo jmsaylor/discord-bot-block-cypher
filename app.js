@@ -6,6 +6,7 @@ const makeWallet = require("./functions/blockchain/makeWallet");
 const getWallets = require("./functions/blockchain/getWallets");
 const getMyWallet = require("./functions/blockchain/getMyWallet");
 const getBalance = require("./functions/blockchain/getBalance");
+const addAddress = require("./functions/blockchain/addAddress");
 
 const { tokenDiscord } = require("./config/config");
 
@@ -17,10 +18,16 @@ client.login(tokenDiscord);
 
 client.on("ready", () => {
   console.log(`Total balances under moderation .... 0000000`);
+  client.user.setActivity("listening to ^info", {
+    type: "STREAMING",
+    url: "https://tech-project-mix.netlify.app/",
+  });
 });
 
 client.on("message", async (msg) => {
-  //   console.log(thing);
+  if (msg.content.includes("^test")) {
+    msg.author.send("blip blop bloop");
+  }
   if (msg.content.includes("^balance")) {
     console.log(msg.author.username);
     try {
@@ -30,7 +37,14 @@ client.on("message", async (msg) => {
 
       const balance = await getBalance("ltc", addresses[0]);
 
-      msg.reply(JSON.stringify(balance));
+      msg.reply(JSON.stringify(addresses));
+
+      msg.reply(`
+
+
+        Address: ${balance.address}
+        Balance: ${balance.balance}
+      `);
     } catch (error) {
       console.error(error);
     }
@@ -39,12 +53,12 @@ client.on("message", async (msg) => {
   if (msg.content.includes("^makeaddress")) {
     try {
       const address = await makeAddress("ltc");
-      console.log("address creation in process...");
+      msg.reply("address creation in process...");
+
       msg.reply(
-        "***IMPORTANT - next step...*** `^makewallet <name> <address>` "
+        "***IMPORTANT - next step...*** `makewallet <name> <address>` "
       );
-      console.log(address);
-      msg.reply(JSON.stringify(address));
+      msg.author.send(JSON.stringify(address));
     } catch (error) {
       console.error(error);
     }
@@ -62,6 +76,12 @@ client.on("message", async (msg) => {
 
     console.log(wallet);
     msg.reply(JSON.stringify(wallet));
+  }
+
+  if (msg.content.includes("^addAddress")) {
+    const arr = msg.content.split(" ").slice(1);
+    const updatedWallet = await addAddress("ltc", arr[0], msg.author.username);
+    msg.reply(JSON.stringify(updatedWallet));
   }
 
   if (msg.content.includes("^mention")) {
@@ -85,14 +105,17 @@ client.on("message", async (msg) => {
     });
   }
 
-  if (msg.content.includes("^help")) {
+  if (msg.content.includes("^help") || msg.content.includes("^info")) {
     msg.reply(`
       ***HELP PAGE***
-      help - this page
+
+        _IMPORTANT_ DON'T USE THESE WALLETS YET - ONLY FOR TESTING PURPOSES
+
+        help - this page
         makeaddress - returns new address like {private,public,address,wif}
         makewallet <address> - stores address in wallet name of your Discord username
-    wallets - list all wallets
-    balance - show my balance
+        wallets - list all wallets
+        balance - show my balance
       `);
   }
 });
