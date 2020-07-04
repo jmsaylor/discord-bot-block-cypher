@@ -66,6 +66,10 @@ client.on("message", async (msg) => {
     const wallets = await getWallets("ltc");
     msg.reply(JSON.stringify(wallets));
   }
+  if (msg.content.includes("^mywallet")) {
+    const myWallet = await getMyWallet("ltc", msg.author.username);
+    msg.reply(JSON.stringify(myWallet));
+  }
 
   if (msg.content.includes("^makewallet")) {
     //collect arguments
