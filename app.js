@@ -7,6 +7,7 @@ const getWallets = require("./functions/blockchain/getWallets");
 const getMyWallet = require("./functions/blockchain/getMyWallet");
 const getBalance = require("./functions/blockchain/getBalance");
 const addAddress = require("./functions/blockchain/addAddress");
+const removeAddress = require("./functions/blockchain/removeAddress");
 
 const { tokenDiscord } = require("./config/config");
 
@@ -37,11 +38,9 @@ client.on("message", async (msg) => {
 
       const balance = await getBalance("ltc", addresses[0]);
 
-      msg.reply(JSON.stringify(addresses));
+      msg.reply("Addresses in your wallet: " + JSON.stringify(addresses));
 
       msg.reply(`
-
-
         Address: ${balance.address}
         Balance: ${balance.balance}
       `);
@@ -78,10 +77,28 @@ client.on("message", async (msg) => {
     msg.reply(JSON.stringify(wallet));
   }
 
-  if (msg.content.includes("^addAddress")) {
+  if (msg.content.includes("^addaddress")) {
+    //not working yet - supposed to be able to add new addresses to your wallet but keep getting
+    //an erroneous server error (Max Limits reached)
     const arr = msg.content.split(" ").slice(1);
-    const updatedWallet = await addAddress("ltc", arr[0], msg.author.username);
+    const address = arr[0];
+    const updatedWallet = await addAddress("ltc", address, msg.author.username);
     msg.reply(JSON.stringify(updatedWallet));
+  }
+
+  if (msg.content.includes("^removeaddress")) {
+    const arr = msg.content.split(" ").slice(1);
+    const address = arr[0];
+    try {
+      const updatedWallet = await removeAddress(
+        "ltc",
+        msg.author.username,
+        address
+      );
+      msg.reply("command successful");
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   if (msg.content.includes("^mention")) {
@@ -107,13 +124,14 @@ client.on("message", async (msg) => {
 
   if (msg.content.includes("^help") || msg.content.includes("^info")) {
     msg.reply(`
-      ***HELP PAGE***
+        ***HELP PAGE***
 
         _IMPORTANT_ DON'T USE THESE WALLETS YET - ONLY FOR TESTING PURPOSES
 
         help - this page
-        makeaddress - returns new address like {private,public,address,wif}
+        makeaddress - creates & DMs you new address {private,public,address,wif}
         makewallet <address> - stores address in wallet name of your Discord username
+        addaddress <address> - add address to a wallet
         wallets - list all wallets
         balance - show my balance
       `);
