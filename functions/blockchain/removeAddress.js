@@ -2,7 +2,6 @@ const fetch = require("node-fetch");
 const { tokenBlockCypher } = require("../../config/config");
 
 const removeAddress = async (blockchain, name, address) => {
-    //Doesn't work -- Should switch to HD Wallets anyway
   //Remove endpoint only sends an empty 204 if successful
   const url = `https://api.blockcypher.com/v1/${blockchain}/main/wallets/${name}/addresses?token=${tokenBlockCypher}&address=${address}`;
   console.log(url);
