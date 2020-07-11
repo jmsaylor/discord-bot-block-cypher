@@ -8,6 +8,7 @@ const getMyWallet = require("./functions/blockchain/getMyWallet");
 const getBalance = require("./functions/blockchain/getBalance");
 const addAddress = require("./functions/blockchain/addAddress");
 const removeAddress = require("./functions/blockchain/removeAddress");
+const transact = require("./functions/blockchain/transactMicro");
 
 const { tokenDiscord } = require("./config/config");
 
@@ -29,7 +30,11 @@ client.on("message", async (msg) => {
   if (msg.content.includes("^test")) {
     msg.author.send("blip blop bloop");
   }
-  if (msg.content.includes("^balance")) {
+  if (
+    msg.content.includes("^balance") ||
+    msg.content.includes("^wallet") ||
+    msg.content.includes("^mywallet")
+  ) {
     console.log(msg.author.username);
     try {
       //   msg.reply(`***Your balance is: ${balance}***`);
