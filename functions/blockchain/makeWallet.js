@@ -1,27 +1,28 @@
-const fetch = require('node-fetch');
-const { tokenBlockCypher } = require('../../config/config');
+const fetch = require("node-fetch");
+const { tokenBlockCypher } = require("../../config/config");
 
 const makeWallet = async (blockchain, name, address) => {
-    const info = {
-        name: name,
-        addresses: [address],
-    };
-    const theString = JSON.stringify(info);
-    //   console.log(theString);
-    try {
-        let wallet = await fetch(
-            `https://api.blockcypher.com/v1/${blockchain}/main/wallets?token=${tokenBlockCypher}`,
-            {
-                method: 'POST',
-                body: theString,
-            }
-        );
-        wallet = await wallet.json();
+  let info = {
+    name: name,
+    addresses: [address],
+  };
 
-        return wallet;
-    } catch (error) {
-        console.error(error);
-    }
+  info = JSON.stringify(info);
+
+  try {
+    let wallet = await fetch(
+      `https://api.blockcypher.com/v1/${blockchain}/main/wallets?token=${tokenBlockCypher}`,
+      {
+        method: "POST",
+        body: info,
+      }
+    );
+    wallet = await wallet.json();
+
+    return wallet;
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 module.exports = makeWallet;
