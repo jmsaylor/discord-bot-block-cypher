@@ -1,5 +1,4 @@
-API Docs:
-https://www.blockcypher.com/dev/bitcoin/#introduction
+#Overview
 
-Trello:
-https://trello.com/b/1URsbIMV/block-cypher-bot
+This project is a proof-of-concept for a bot that brokers commands between users on a server and a blockchain. It uses [BlockCypher API](https://www.blockcypher.com/dev/) to carry out many functions on and related to various blockchains (Bitcoin, Ethereum, & Doge).  
+
